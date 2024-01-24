@@ -2,8 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import z from "zod";
-import { FileRoute, Navigate } from "@tanstack/react-router";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const signInSchema = z.object({
   email: z.string().email(),
@@ -11,7 +10,7 @@ const signInSchema = z.object({
 });
 type SignInSchemaPayload = z.infer<typeof signInSchema>;
 
-const SignIn: React.FunctionComponent = () => {
+export const SignIn: React.FunctionComponent = () => {
   const {
     register,
     handleSubmit,
@@ -39,9 +38,6 @@ const SignIn: React.FunctionComponent = () => {
   const handleSignIn = (payload: SignInSchemaPayload) => {
     mutationSignIn.mutate(payload);
   };
-  if (!auth.authInitializing && auth.token) {
-    return <Navigate to="/" />;
-  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -102,7 +98,3 @@ const SignIn: React.FunctionComponent = () => {
     </div>
   );
 };
-
-export const Route = new FileRoute("/auth/sign-in").createRoute({
-  component: SignIn,
-});

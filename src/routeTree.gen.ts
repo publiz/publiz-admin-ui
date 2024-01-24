@@ -4,8 +4,12 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
+import { Route as UsersIndexImport } from './routes/users/index'
+import { Route as TagsIndexImport } from './routes/tags/index'
+import { Route as PostsIndexImport } from './routes/posts/index'
 import { Route as OrganizationsIndexImport } from './routes/organizations/index'
-import { Route as AuthSignInImport } from './routes/auth/sign-in'
+import { Route as MetaSchemasIndexImport } from './routes/meta-schemas/index'
+import { Route as FilesIndexImport } from './routes/files/index'
 
 // Create/Update Routes
 
@@ -14,13 +18,33 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const UsersIndexRoute = UsersIndexImport.update({
+  path: '/users/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TagsIndexRoute = TagsIndexImport.update({
+  path: '/tags/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PostsIndexRoute = PostsIndexImport.update({
+  path: '/posts/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const OrganizationsIndexRoute = OrganizationsIndexImport.update({
   path: '/organizations/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthSignInRoute = AuthSignInImport.update({
-  path: '/auth/sign-in',
+const MetaSchemasIndexRoute = MetaSchemasIndexImport.update({
+  path: '/meta-schemas/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FilesIndexRoute = FilesIndexImport.update({
+  path: '/files/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -32,12 +56,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/auth/sign-in': {
-      preLoaderRoute: typeof AuthSignInImport
+    '/files/': {
+      preLoaderRoute: typeof FilesIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/meta-schemas/': {
+      preLoaderRoute: typeof MetaSchemasIndexImport
       parentRoute: typeof rootRoute
     }
     '/organizations/': {
       preLoaderRoute: typeof OrganizationsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/posts/': {
+      preLoaderRoute: typeof PostsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/tags/': {
+      preLoaderRoute: typeof TagsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/users/': {
+      preLoaderRoute: typeof UsersIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -47,6 +87,10 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
-  AuthSignInRoute,
+  FilesIndexRoute,
+  MetaSchemasIndexRoute,
   OrganizationsIndexRoute,
+  PostsIndexRoute,
+  TagsIndexRoute,
+  UsersIndexRoute,
 ])
