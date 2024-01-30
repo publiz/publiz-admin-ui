@@ -8,7 +8,7 @@ export const EntryPoint: React.FunctionComponent = () => {
   if (auth.authInitializing) {
     return null;
   }
-  if (!auth.token) {
+  if (!auth.myProfile) {
     return <SignIn />;
   }
   return (

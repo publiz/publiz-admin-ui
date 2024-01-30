@@ -1,13 +1,12 @@
 import {
   PropsWithChildren,
   createContext,
-  useState,
   useEffect,
   useContext,
   useCallback,
 } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { User, firebaseAuth, useApiCallImplicitly } from "../api";
+import { User, firebaseAuth, getMyProfile } from "../api";
 import {
   User as FirebaseUser,
   createUserWithEmailAndPassword,
@@ -15,6 +14,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import { buildQueryOptions } from "../libs/query";
 
 type SignUpPayload = {
   email: string;
@@ -28,7 +28,6 @@ type SignInPayload = {
 
 export type AuthContextState = {
   authInitializing: boolean;
-  token?: string;
   signUp: (payload: SignUpPayload) => Promise<void>;
   signIn: (payload: SignInPayload) => Promise<void>;
   forgetPasswordByEmail: (email: string) => Promise<void>;
@@ -56,21 +55,19 @@ export const AuthContext = createContext<AuthContextState>({
 export const AuthProvider: React.FunctionComponent<PropsWithChildren> = ({
   children,
 }) => {
-  const [authInitializing, setInitializing] = useState(true);
-  const [token, setToken] = useState<string | undefined>();
-  const api = useApiCallImplicitly(token);
-
-  const { data: myProfile } = useQuery({
-    queryKey: ["my_profile"],
-    queryFn: () => api.getMyProfile(),
-    enabled: !!token,
+  const {
+    data: myProfile,
+    refetch,
+    isPending: authInitializing,
+  } = useQuery({
+    ...buildQueryOptions(getMyProfile),
+    enabled: false,
   });
-
   useEffect(() => {
     const onAuthStateChanged = async (user: FirebaseUser | null) => {
-      const idToken = await user?.getIdToken();
-      setToken(idToken);
-      setInitializing(false);
+      if (user) {
+        refetch();
+      }
     };
 
     const subscriber = firebaseAuth.onAuthStateChanged(onAuthStateChanged);
@@ -87,7 +84,6 @@ export const AuthProvider: React.FunctionComponent<PropsWithChildren> = ({
 
   const appSignOut = useCallback(async () => {
     await signOut(firebaseAuth);
-    setToken(undefined);
   }, []);
 
   const forgetPasswordByEmail = useCallback(async (email: string) => {
@@ -98,7 +94,6 @@ export const AuthProvider: React.FunctionComponent<PropsWithChildren> = ({
     <AuthContext.Provider
       value={{
         authInitializing,
-        token,
         signUp,
         signIn,
         signOut: appSignOut,

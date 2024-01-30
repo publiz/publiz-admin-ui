@@ -15,9 +15,11 @@
     "@tanstack/react-router": "^1.8.3",
     "@tanstack/router-devtools": "^1.8.3",
     "firebase": "^10.7.2",
+    "ky": "^1.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.49.3",
+    "react-hot-toast": "^2.4.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {

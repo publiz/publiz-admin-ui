@@ -1,9 +1,9 @@
-import { useMemo } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import ky from "ky";
+import { firebaseAuth } from "./firebase";
 
-type Option = {
-  token?: string;
-};
+// type Option = {
+//   token?: string;
+// };
 export type BaseResponse<T> = {
   data: T;
 };
@@ -11,53 +11,52 @@ export type User = {
   id: number;
   authId: string;
   displayName: string;
-  dob?: string;
-  bio?: string;
   avatarUrl?: string;
   coverUrl?: string;
-  gender?: string;
 };
 
-function createPublizApi({ token }: Option) {
-  const baseUrl = "https://genzdev-staging-publiz-api.fibotree.com";
-  return {
-    async fetchJson(input: RequestInfo, init?: RequestInit) {
-      const headers = new Headers({
-        "Content-Type": "application/json",
-      });
-      if (token) {
-        headers.append("Authorization", `Bearer ${token}`);
-      }
-      const response = await fetch(input, {
-        ...init,
-        headers,
-      });
-      if (response.status === 204) {
-        return "204 No Content";
-      }
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error.message);
-      }
-      return data;
-    },
-
-    async getMyProfile(): Promise<BaseResponse<User>> {
-      return this.fetchJson(`${baseUrl}/api/v1/users/my_profile`, {
-        method: "GET",
-      });
-    },
-  };
-}
-export const useApiCall = () => {
-  const auth = useAuth();
-  return useMemo(() => {
-    return createPublizApi({ token: auth.token });
-  }, [auth.token]);
+export type Organization = {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  logoUrl?: string;
+  coverUrl?: string;
+  verified: boolean;
+  ownerId: number;
 };
 
-export const useApiCallImplicitly = (token?: string) => {
-  return useMemo(() => {
-    return createPublizApi({ token });
-  }, [token]);
+export const publizClient = ky.extend({
+  prefixUrl: import.meta.env.VITE_BASE_PUBLIZ_URL,
+  hooks: {
+    beforeRequest: [
+      async (request) => {
+        const token = await firebaseAuth.currentUser?.getIdToken();
+        if (token) {
+          request.headers.set("Authorization", `Bearer ${token}`);
+        }
+      },
+    ],
+  },
+});
+
+export const getMyProfile = () =>
+  publizClient.get("api/v1/users/my_profile").json<BaseResponse<User>>();
+
+export const getOrganizations = () =>
+  publizClient.get("api/v1/organizations").json<BaseResponse<Organization[]>>();
+
+export type CreateOrganizationInput = {
+  name: string;
+  slug: string;
+  description: string;
+  logoUrl?: string;
+  coverUrl?: string;
+  verified: boolean;
+  ownerId: number;
+};
+export const createOrganization = (input: CreateOrganizationInput) => {
+  return publizClient
+    .post("admin/api/v1/organizations", { json: input })
+    .json<BaseResponse<Organization>>();
 };
