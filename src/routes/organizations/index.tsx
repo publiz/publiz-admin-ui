@@ -3,6 +3,8 @@ import { buildQueryOptions } from "../../libs/query";
 import { getOrganizations } from "../../api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Page } from "../../components/Page";
+import { Avatar, AvatarFallback } from "../../components/ui/Avatar";
+import { buttonVariants } from "../../components/ui/Button";
 
 const Organizations: React.FunctionComponent = () => {
   const {
@@ -12,14 +14,30 @@ const Organizations: React.FunctionComponent = () => {
     <Page
       title="Organizations"
       subTitle="List of all organizations"
-      action={<Link to="/organizations/create">Create</Link>}
+      action={
+        <Link
+          to="/organizations/create"
+          className={buttonVariants({ variant: "default" })}
+        >
+          Create
+        </Link>
+      }
     >
-      {organizations.map((organization) => (
-        <div key={organization.id}>
-          <h3 className="font-medium text-gray-600">{organization.name}</h3>
-          <p className="text-sm">{organization.description}</p>
-        </div>
-      ))}
+      <div className="space-y-3">
+        {organizations.map((organization) => (
+          <div key={organization.id} className="flex">
+            <div>
+              <Avatar>
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            </div>
+            <div className="ml-2">
+              <h3 className="font-medium text-gray-600">{organization.name}</h3>
+              <p className="text-sm">{organization.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </Page>
   );
 };

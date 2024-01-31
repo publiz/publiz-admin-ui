@@ -7,6 +7,12 @@ import toast from "react-hot-toast";
 
 import { CreateOrganizationInput, createOrganization } from "../../api";
 import { useMutation } from "@tanstack/react-query";
+import { Input } from "../ui/Input";
+import { Textarea } from "../ui/Textarea";
+import { Switch } from "../ui/Switch";
+import { Button } from "../ui/Button";
+import { Label } from "../ui/Label";
+import { FormItem } from "../ui/Form";
 
 type CreateOrganizationFormSchema = z.infer<typeof createOrganizationSchema>;
 
@@ -37,63 +43,47 @@ export const CreateOrganizationForm: React.FunctionComponent = () => {
     });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col mb-4">
-        <label className="mb-2 font-medium text-gray-600">Name</label>
-        <input
-          type="text"
-          className="border rounded-lg px-3 py-2"
-          {...register("name")}
-        />
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+      <FormItem>
+        <Label>Name</Label>
+        <Input type="text" {...register("name")} />
         {errors.name && <p className="text-red-500">{errors.name.message}</p>}
-      </div>
-      <div className="flex flex-col mb-4">
-        <label className="mb-2 font-medium text-gray-600">Slug</label>
-        <input
-          type="text"
-          className="border rounded-lg px-3 py-2"
-          {...register("slug")}
-        />
+      </FormItem>
+      <FormItem>
+        <Label>Slug</Label>
+        <Input type="text" {...register("slug")} />
         {errors.slug && <p className="text-red-500">{errors.slug.message}</p>}
-      </div>
-      <div className="flex flex-col mb-4">
-        <label className="mb-2 font-medium text-gray-600">Description</label>
-        <textarea
-          className="border rounded-lg px-3 py-2"
-          {...register("description")}
-        />
+      </FormItem>
+      <FormItem>
+        <Label>Description</Label>
+        <Textarea {...register("description")} />
+
         {errors.description && (
           <p className="text-red-500">{errors.description.message}</p>
         )}
-      </div>
-      <div className="flex flex-col mb-4">
-        <label className="mb-2 font-medium text-gray-600">Verified</label>
-        <input
-          type="checkbox"
-          className="border rounded-lg px-3 py-2"
-          {...register("verified")}
-        />
-      </div>
-      <div className="flex flex-col mb-4">
-        <label className="mb-2 font-medium text-gray-600">Owner ID</label>
-        <input
+      </FormItem>
+      <FormItem>
+        <Label>Verified</Label>
+        <div>
+          <Switch id="airplane-mode" />
+        </div>
+      </FormItem>
+      <FormItem>
+        <Label>Owner ID</Label>
+        <Input
           type="number"
-          className="border rounded-lg p-3 py-2"
           {...register("ownerId", {
             valueAsNumber: true,
           })}
         />
+
         {errors.ownerId && (
           <p className="text-red-500">{errors.ownerId.message}</p>
         )}
-      </div>
-      <button
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg w-full disabled:opacity-50"
-        type="submit"
-        disabled={!isValid}
-      >
+      </FormItem>
+      <Button type="submit" className="w-full" disabled={!isValid}>
         Create
-      </button>
+      </Button>
     </form>
   );
 };
