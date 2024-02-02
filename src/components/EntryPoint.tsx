@@ -2,6 +2,7 @@ import { Outlet } from "@tanstack/react-router";
 import { SideBar } from "./SideBar";
 import { useAuth } from "../contexts/AuthContext";
 import { SignIn } from "./SignIn";
+import { Toaster } from "react-hot-toast";
 
 export const EntryPoint: React.FunctionComponent = () => {
   const auth = useAuth();
@@ -13,6 +14,7 @@ export const EntryPoint: React.FunctionComponent = () => {
   }
   return (
     <div className="w-full pl-52">
+      <Toaster />
       <div className="fixed top-0 left-0 right-0 w-52 bottom-0 bg-gray-900">
         <SideBar />
       </div>

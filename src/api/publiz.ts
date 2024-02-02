@@ -1,9 +1,6 @@
 import ky from "ky";
 import { firebaseAuth } from "./firebase";
 
-// type Option = {
-//   token?: string;
-// };
 export type BaseResponse<T> = {
   data: T;
 };
@@ -46,6 +43,11 @@ export const getMyProfile = () =>
 export const getOrganizations = () =>
   publizClient.get("api/v1/organizations").json<BaseResponse<Organization[]>>();
 
+export const getOrganizationById = (id: number) =>
+  publizClient
+    .get(`api/v1/organizations/${id}`)
+    .json<BaseResponse<Organization>>();
+
 export type CreateOrganizationInput = {
   name: string;
   slug: string;
@@ -58,5 +60,14 @@ export type CreateOrganizationInput = {
 export const createOrganization = (input: CreateOrganizationInput) => {
   return publizClient
     .post("admin/api/v1/organizations", { json: input })
+    .json<BaseResponse<Organization>>();
+};
+
+export const updateOrganization = (
+  id: number,
+  input: CreateOrganizationInput
+) => {
+  return publizClient
+    .put(`admin/api/v1/organizations/${id}`, { json: input })
     .json<BaseResponse<Organization>>();
 };
