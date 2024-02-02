@@ -10,6 +10,7 @@ import { Route as PostsIndexImport } from './routes/posts/index'
 import { Route as OrganizationsIndexImport } from './routes/organizations/index'
 import { Route as MetaSchemasIndexImport } from './routes/meta-schemas/index'
 import { Route as FilesIndexImport } from './routes/files/index'
+import { Route as TagsCreateImport } from './routes/tags/create'
 import { Route as OrganizationsCreateImport } from './routes/organizations/create'
 
 // Create/Update Routes
@@ -49,6 +50,11 @@ const FilesIndexRoute = FilesIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const TagsCreateRoute = TagsCreateImport.update({
+  path: '/tags/create',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const OrganizationsCreateRoute = OrganizationsCreateImport.update({
   path: '/organizations/create',
   getParentRoute: () => rootRoute,
@@ -64,6 +70,10 @@ declare module '@tanstack/react-router' {
     }
     '/organizations/create': {
       preLoaderRoute: typeof OrganizationsCreateImport
+      parentRoute: typeof rootRoute
+    }
+    '/tags/create': {
+      preLoaderRoute: typeof TagsCreateImport
       parentRoute: typeof rootRoute
     }
     '/files/': {
@@ -98,6 +108,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
   OrganizationsCreateRoute,
+  TagsCreateRoute,
   FilesIndexRoute,
   MetaSchemasIndexRoute,
   OrganizationsIndexRoute,
