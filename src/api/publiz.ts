@@ -26,6 +26,13 @@ export type Organization = {
   ownerId: number;
 };
 
+export type Users = {
+  id: number;
+  authId: string;
+  displayName: string;
+  avatarUrl?: string;
+  metadata: any;
+};
 export const publizClient = ky.extend({
   prefixUrl: import.meta.env.VITE_BASE_PUBLIZ_URL,
   hooks: {
@@ -45,6 +52,9 @@ export const getMyProfile = () =>
 
 export const getOrganizations = () =>
   publizClient.get("api/v1/organizations").json<BaseResponse<Organization[]>>();
+
+  export const getUsers = () =>
+  publizClient.get("admin/api/v1/users").json<BaseResponse<Users[]>>();
 
 export type CreateOrganizationInput = {
   name: string;
