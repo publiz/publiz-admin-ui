@@ -4,7 +4,7 @@ import { CreateTagForm } from "../../components/tag/CreateTagForm";
 
 const CreateOrganization: React.FunctionComponent = () => {
   return (
-    <Page title="Create Organization">
+    <Page title="Create Tag">
       <CreateTagForm />
     </Page>
   );

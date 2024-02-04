@@ -88,6 +88,7 @@ export const createTag = (input: CreateTagInput) => {
     .post("admin/api/v1/tags", { json: input })
     .json<BaseResponse<Tag>>();
 };
+
 export const updateOrganization = (
   id: number,
   input: CreateOrganizationInput
