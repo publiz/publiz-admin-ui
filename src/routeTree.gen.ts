@@ -12,6 +12,7 @@ import { Route as MetaSchemasIndexImport } from './routes/meta-schemas/index'
 import { Route as FilesIndexImport } from './routes/files/index'
 import { Route as TagsCreateImport } from './routes/tags/create'
 import { Route as OrganizationsCreateImport } from './routes/organizations/create'
+import { Route as OrganizationsIdImport } from './routes/organizations/$id'
 
 // Create/Update Routes
 
@@ -60,12 +61,21 @@ const OrganizationsCreateRoute = OrganizationsCreateImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const OrganizationsIdRoute = OrganizationsIdImport.update({
+  path: '/organizations/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/organizations/$id': {
+      preLoaderRoute: typeof OrganizationsIdImport
       parentRoute: typeof rootRoute
     }
     '/organizations/create': {
@@ -107,6 +117,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
+  OrganizationsIdRoute,
   OrganizationsCreateRoute,
   TagsCreateRoute,
   FilesIndexRoute,

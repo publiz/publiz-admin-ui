@@ -25,17 +25,26 @@ const Organizations: React.FunctionComponent = () => {
     >
       <div className="space-y-3">
         {organizations.map((organization) => (
-          <div key={organization.id} className="flex">
-            <div>
-              <Avatar>
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="ml-2">
-              <h3 className="font-medium text-gray-600">{organization.name}</h3>
-              <p className="text-sm">{organization.description}</p>
-            </div>
-          </div>
+          <Link
+            key={organization.id}
+            className="flex"
+            to="/organizations/$id"
+            params={{ id: organization.id.toString() }}
+          >
+            <>
+              <div>
+                <Avatar>
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </div>
+              <div className="ml-2">
+                <h3 className="font-medium text-gray-600">
+                  {organization.name}
+                </h3>
+                <p className="text-sm">{organization.description}</p>
+              </div>
+            </>
+          </Link>
         ))}
       </div>
     </Page>
