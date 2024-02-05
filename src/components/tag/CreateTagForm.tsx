@@ -2,16 +2,22 @@ import React from "react";
 import { z } from "zod";
 import { createTagSchema } from "./schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 import { CreateTagInput, createTag } from "../../api";
 import { useMutation } from "@tanstack/react-query";
 import { Input } from "../ui/Input";
-import { Textarea } from "../ui/Textarea";
 import { Button } from "../ui/Button";
 import { Label } from "../ui/Label";
 import { FormItem } from "../ui/Form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/Select";
 
 type CreateTagFormSchema = z.infer<typeof createTagSchema>;
 
@@ -19,6 +25,7 @@ export const CreateTagForm: React.FunctionComponent = () => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { isValid, errors },
   } = useForm<CreateTagFormSchema>({
     mode: "onBlur",
@@ -53,15 +60,28 @@ export const CreateTagForm: React.FunctionComponent = () => {
         <Input type="text" {...register("slug")} />
         {errors.slug && <p className="text-red-500">{errors.slug.message}</p>}
       </FormItem>
-      <FormItem>
-        <Label>Type</Label>
-        <Textarea {...register("type")} />
-
-        {errors.type && (
-          <p className="text-red-500">{errors.type.message}</p>
+      <Controller
+        name="type"
+        control={control}
+        render={({ field }) => (
+          <FormItem>
+            <Label>Type</Label>
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="DEFAULT">DEFAULT</SelectItem>
+                <SelectItem value="SYSTEM">SYSTEM</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.type && (
+              <p className="text-red-500">{errors.type.message}</p>
+            )}
+          </FormItem>
         )}
-      </FormItem>
-      
+      ></Controller>
+
       <FormItem>
         <Label>Organization ID</Label>
         <Input
