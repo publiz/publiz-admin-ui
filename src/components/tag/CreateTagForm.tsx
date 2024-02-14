@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-import { CreateTagInput, createTag } from "../../api";
+import { CreateTagInput, Tag, createTag, updateTag } from "../../api";
 import { useMutation } from "@tanstack/react-query";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
@@ -21,7 +21,11 @@ import {
 
 type CreateTagFormSchema = z.infer<typeof createTagSchema>;
 
-export const CreateTagForm: React.FunctionComponent = () => {
+type Props = {
+  tag?: Tag;
+};
+
+export const CreateTagForm: React.FunctionComponent<Props> = ({ tag, }) => {
   const {
     register,
     handleSubmit,
@@ -30,24 +34,35 @@ export const CreateTagForm: React.FunctionComponent = () => {
   } = useForm<CreateTagFormSchema>({
     mode: "onBlur",
     resolver: zodResolver(createTagSchema),
+    defaultValues: {
+      name: tag?.name || "",
+      slug: tag?.slug || "",
+      organizationId: tag?.organizationId || 0,
+      userId: tag?.userId || 0,
+      type: tag?.type || "DEFAULT",
+    },
   });
 
   const mutation = useMutation({
     mutationFn: (input: CreateTagInput) => {
+      if (tag) {
+        return updateTag(tag.id, input);
+      }
       return createTag(input);
     },
   });
   const onSubmit = (data: CreateTagFormSchema) =>
     mutation.mutate(data, {
       onSuccess: async () => {
-        toast.success("Tag created");
+        toast.success(`Tag ${tag ? "updated" : "created"}`);
       },
       onError: (errors) => {
         console.error(errors);
-        toast.error("Tag could not be created");
+        toast.error(
+          `Tag could not be ${tag ? "updated" : "created"}`
+        );
       },
     });
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
       <FormItem>

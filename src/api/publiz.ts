@@ -60,6 +60,12 @@ export const getOrganizationById = (id: number) =>
     .get(`api/v1/organizations/${id}`)
     .json<BaseResponse<Organization>>();
 
+export const getTagById = (id: number) =>
+  publizClient
+    .get(`api/v1/tags/${id}`)
+    .json<BaseResponse<Tag>>();
+
+
 export type CreateOrganizationInput = {
   name: string;
   slug: string;
@@ -96,4 +102,12 @@ export const updateOrganization = (
   return publizClient
     .put(`admin/api/v1/organizations/${id}`, { json: input })
     .json<BaseResponse<Organization>>();
+};
+export const updateTag = (
+  id: number,
+  input: CreateTagInput
+) => {
+  return publizClient
+    .put(`admin/api/v1/tags/${id}`, { json: input })
+    .json<BaseResponse<Tag>>();
 };

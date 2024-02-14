@@ -1,6 +1,6 @@
 import { FileRoute, Link } from "@tanstack/react-router";
 import { buildQueryOptions } from "../../libs/query";
-import {  getTags } from "../../api";
+import { getTags } from "../../api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Page } from "../../components/Page";
 import { Avatar, AvatarFallback } from "../../components/ui/Avatar";
@@ -25,17 +25,25 @@ const Tags: React.FunctionComponent = () => {
     >
       <div className="space-y-3">
         {tags.map((tag) => (
-          <div key={tag.id} className="flex">
-            <div>
-              <Avatar>
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="ml-2">
-              <h3 className="font-medium text-gray-600">{tag.name}</h3>
-              
-            </div>
-          </div>
+          <Link
+            key={tag.id}
+            className="flex"
+            to="/tags/$id"
+            params={{ id: tag.id.toString() }}
+          >
+            <>
+              <div>
+                <Avatar>
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </div>
+              <div className="ml-2">
+                <h3 className="font-medium text-gray-600">
+                  {tag.name}
+                </h3>
+              </div>
+            </>
+          </Link>
         ))}
       </div>
     </Page>
