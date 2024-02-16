@@ -5,6 +5,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Page } from "../../components/Page";
 import { Avatar, AvatarFallback } from "../../components/ui/Avatar";
 import { buttonVariants } from "../../components/ui/Button";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Tags: React.FunctionComponent = () => {
   const {
@@ -42,6 +43,7 @@ const Tags: React.FunctionComponent = () => {
                   {tag.name}
                 </h3>
               </div>
+              <DeleteIcon />
             </>
           </Link>
         ))}
